@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz on Plant Stress Responses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #66a6ff, #89f7fe);
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .progress {
+            height: 20px;
+            background-color: #4caf50;
+            width: 0;
+            border-radius: 5px;
+        }
+        #timer {
+            font-size: 24px;
+            color: red;
+        }
+        #result {
+            display: none;
+            font-size: 24px;
+            margin-top: 30px;
+        }
+        .question {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>اختبار عن استجابة النباتات للإجهاد</h1>
+    <div id="timer">60</div>
+    <div class="progress-bar">
+        <div class="progress" id="progress-bar"></div>
+    </div>
+    <div id="quiz-container"></div>
+    <div id="result"></div>
+    <button id="submit" style="display: none;">إرسال</button>
+
+    <script>
+        const questions = [
+            { question: "ما هو الإجهاد المائي؟", choices: ["عدم وجود ماء", "زيادة الماء", "توازن الماء", "تحمل الجفاف"], answer: 0 },
+            { question: "كيف تؤثر درجات الحرارة المرتفعة على النبات؟", choices: ["تساعد على النمو", "تسبب الأذى", "لا تؤثر", "تزيد من الأكسجين"], answer: 1 },
+            // Add more questions (total 15)
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        const totalQuestions = questions.length;
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result');
+        const progressBar = document.getElementById('progress-bar');
+        const timerDisplay = document.getElementById('timer');
+        const submitButton = document.getElementById('submit');
+        
+        function loadQuestion() {
+            if (currentQuestion < totalQuestions) {
+                quizContainer.innerHTML = `
+                    <div class="question">${questions[currentQuestion].question}</div>
+                    ${questions[currentQuestion].choices.map((choice, index) =>
+                        `<button onclick="checkAnswer(${index})">${choice}</button>`
+                    ).join('')}
+                `;
+                updateProgress();
+            } else {
+                showResult();
+            }
+        }
+
+        function checkAnswer(selected) {
+            if (selected === questions[currentQuestion].answer) score++;
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function showResult() {
+            quizContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+            resultContainer.innerHTML = `نتيجتك: ${score} من ${totalQuestions}`;
+        }
+
+        function updateProgress() {
+            const progressPercent = (currentQuestion / totalQuestions) * 100;
+            progressBar.style.width = progressPercent + '%';
+            if (currentQuestion === totalQuestions - 1) {
+                submitButton.style.display = 'inline';
+            }
+        }
+
+        let timer = 60;
+        const timerInterval = setInterval(() => {
+            timer--;
+            timerDisplay.innerText = timer;
+            if (timer <= 0) {
+                clearInterval(timerInterval);
+                showResult();
+            }
+        }, 1000);
+
+        loadQuestion();
+    </script>
+</body>
+</html>
